@@ -7,11 +7,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: true
+      MONGO_URL: mongodb://localhost/nasa
+      PORT: 8000
+    strategy: 
+      matrix:
+        node-version: ['14.x',16.x]
+        mongodb-version: ['4.4']
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js version 16
         uses: actions/setup-node@v2
         with:
           node-version: "16"
+      - name: MongoDB connect
+        uses: supercharge/mongodb-github-actions@1.6.0
+          with:
+            mongodb-version: ${{matrix.node-version}}
       - run: npm install
       - run: npm run build --prefix client
